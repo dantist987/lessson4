@@ -7,9 +7,9 @@ public class Main {
     static int bossHealth = 700;
     static int bossDamage = 50;
     static String bossDefenceType = "";
-    static int[] heroesHealth = {300, 320, 340, 360};
-    static int[] heroesDamage = {30, 35, 25, 20};
-    static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Archer"};
+    static int[] heroesHealth = {300, 320, 340, 360, 400};
+    static int[] heroesDamage = {30, 35, 25, 20, 0};
+    static String[] heroesAttackType = {"Physical", "Magical", "Kinetic", "Archer", "Medic"};
     static int roundCounter = 1;
 
     public static void main(String[] args) {
@@ -21,14 +21,20 @@ public class Main {
 
     }
 
+
     public static void printStatistics() {
         System.out.println("----------------");
         System.out.println("Round: " + roundCounter);
         System.out.println("Boss Health: " + bossHealth);
+
         for (int i = 0; i < heroesAttackType.length; i++) {
+
             System.out.println(heroesAttackType[i] + " health: " + heroesHealth[i]);
         }
+
         System.out.println("----------------");
+
+
     }
 
     public static void bossHits() {
@@ -63,6 +69,34 @@ public class Main {
         }
     }
 
+    public static void medicHeals() {
+        int medicheals = heroesHealth[4];
+        if (medicheals <= 0) {
+            System.out.println("Medic is dead.");
+            return;
+        }
+        int minHealthHero = 0;
+
+        for (int i = 0; i < heroesHealth.length; i++) {
+
+            for (int j = i + 1; j < heroesHealth.length; j++) {
+                if (heroesHealth[j] > 0 && heroesHealth[j] < heroesHealth[i]) {
+                    minHealthHero = j;
+                }
+            }
+
+        }
+
+
+        if (heroesHealth[minHealthHero] < 100) {
+            int randomHeal = new Random().nextInt(41);
+            heroesHealth[minHealthHero] = heroesHealth[minHealthHero] + randomHeal;
+            System.out.println(heroesAttackType[minHealthHero] + " healed up for " + randomHeal);
+
+        }
+    }
+
+
     public static boolean isGameOver() {
         if (bossHealth <= 0) {
             System.out.println("Heroes won!!!");
@@ -90,6 +124,7 @@ public class Main {
         System.out.println("Boss choose: " + bossDefenceType);
     }
 
+
     public static void round() {
         // Проверяем жив ли наш босс
         if (bossHealth > 0) {
@@ -97,9 +132,12 @@ public class Main {
             changeDefenceType();
             // Наносит урон героям
             bossHits();
+            medicHeals();
         }
+
         // Герои наносят урон
         heroesHits();
+
         // Распечатка статистики
         printStatistics();
     }
